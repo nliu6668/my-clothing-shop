@@ -8,8 +8,10 @@ import {
 } from '../../utils/firebase/firebase.utils'
 
 import SignUpForm from '../../components/sign-up-form/sign-up-form.component';
+import SignInForm from '../../components/sign-in-form/sign-in-form.component';
+import './authentication.styles.scss'
 
-const SignIn = () => {
+const Authentication = () => {
 
     const logGoogleUser = async () => {
         // const response = await signInWithGooglePopup();
@@ -17,7 +19,6 @@ const SignIn = () => {
         const {user} = await signInWithGooglePopup();
         const userDocRef = await createUserDocumentFromAuth(user);       
     };
-
 
     // only call this once, auth is a singleton
     // useEffect(() => {
@@ -36,13 +37,14 @@ const SignIn = () => {
     // }
 
   return (
-    <div> 
-      <h1>Sign In Page</h1>
-      <button onClick={logGoogleUser} >Sign in with Google</button>
+    <div className='authentication-container'> 
+
+      {/* <button onClick={logGoogleUser} >Sign in with Google</button> */}
+      <SignInForm />
       <SignUpForm />
-      {/* <button onClick={logGoogleRedirectUser} style={{fontSize: '1.5rem',fontWeight:"bold", backgroundColor:'pink'}}>Sign in with Google Redirect</button> */}
+      {/* <button onClick={logGoogleRedirectUser} >Sign in with Google Redirect</button> */}
     </div>
   )
 }
 
-export default SignIn
+export default Authentication
