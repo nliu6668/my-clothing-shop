@@ -14,9 +14,11 @@ import Authentication from './routes/authentication/authentication.component';
 //   );
 // };
 
-const Shop = () => {
-  return <h1>This is the shop page</h1>;
-};
+// const Shop = () => {
+//   return <h1>This is the shop page</h1>;
+// };
+
+import Shop from './routes/shop/shop.component';
 
 const App = () => {
   return (
