@@ -10,7 +10,16 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch,
+  query,
+  getDocs,
+} from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAHNRL_LU8riU6_fbO0YqPraBBLORgw7ns',
@@ -38,6 +47,45 @@ export const signInWithGoogleRedirect = () =>
 
 //get the firestore database
 export const db = getFirestore();
+
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+  // field
+) => {
+  Array.from(objectsToAdd).forEach((ob) => {
+    console.log('collectionKey; ' + collectionKey);
+    console.log('Object title: ' + ob.title);
+  });
+  const collectionRef = collection(db, collectionKey);
+  const batch = writeBatch(db);
+
+  Array.from(objectsToAdd).forEach((objectToAdd) => {
+    // objectsToAdd.forEach((objectToAdd) => {
+    const docRef = doc(collectionRef, objectToAdd.title.toLowerCase());
+    // const docRef = doc(db, collectionKey, objectToAdd.title.toLowerCase());
+    // you also can pass the field
+    //const docRef = doc(collectionRef, objectToAdd[field].toLowerCase());
+    batch.set(docRef, objectToAdd);
+  });
+  await batch.commit();
+  console.log('done');
+};
+
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db, 'categories');
+  const q = query(collectionRef);
+
+  const querySnapshot = await getDocs(q);
+  //acc == accumulator, {} ==initialize of return object, return object
+  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    const { title, items } = docSnapshot.data();
+    acc[title.toLowerCase()] = items;
+    return acc;
+  }, {});
+
+  return categoryMap;
+};
 
 export const createUserDocumentFromAuth = async (
   userAuth,
@@ -88,9 +136,3 @@ export const signOutUser = async () => await signOut(auth);
 
 export const onAuthStateChangedListner = (callback) =>
   onAuthStateChanged(auth, callback);
-
-/*
- *  next: callback
- *  error: errorcallback
- *  complete: completecallback
- */
